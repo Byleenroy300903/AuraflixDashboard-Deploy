@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfluenceIQ Rankings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>🎬 InfluenceIQ - AI-Powered Rankings</h1>
+    </header>
+
+    <main>
+        <table class="ranking-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Years Active</th>
+                    <th>Credibility</th>
+                    <th>Engagement</th>
+                    <th>Popularity</th>
+                    <th>InfluenceIQ Score</th>
+                    <th>Location</th>
+                    <th>Coordinates</th>
+                </tr>
+            </thead>
+            <tbody id="rankingsTable">
+                {% for row in rankings %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.category }}</td>
+                    <td>{{ row.years_active }}</td>
+                    <td>{{ row.credibility_score }}</td>
+                    <td>{{ row.engagement_rate }}</td>
+                    <td>{{ row.popularity_trend }}</td>
+                    <td>{{ row.influenceiq_score }}</td>
+                    <td>{{ row.district }}, {{ row.state }}, {{ row.nation }}</td>
+                    <td>{{ row.latitude }}, {{ row.longitude }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+        async function fetchRankings() {
+            try {
+                const response = await fetch('/get_rankings');
+                const data = await response.json();
+
+                const table = document.getElementById('rankingsTable');
+                table.innerHTML = "";  // Clear old data
+
+                data.rankings.forEach((figure, index) => {
+                    const location = `${figure.district}, ${figure.state}, ${figure.nation}`;
+                    const coordinates = `${figure.latitude}, ${figure.longitude}`;
+
+                    const row = `
+                        <tr>
+                            <td>#${index + 1}</td>
+                            <td>${figure.name}</td>
+                            <td>${figure.category}</td>
+                            <td>${figure.years_active}</td>
+                            <td>${figure.credibility_score}</td>
+                            <td>${figure.engagement_rate}</td>
+                            <td>${figure.popularity_trend}</td>
+                            <td>${figure.influenceiq_score}</td>
+                            <td>${location}</td>
+                            <td>${coordinates}</td>
+                        </tr>
+                    `;
+                    table.innerHTML += row;
+                });
+            } catch (error) {
+                console.error("Error fetching rankings:", error);
+            }
+        }
+
+        // 🔥 Fetch rankings immediately and refresh every 5 seconds
+        fetchRankings();
+        setInterval(fetchRankings, 5000);
+    </script>
+
+</body>
+</html>

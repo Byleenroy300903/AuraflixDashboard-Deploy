@@ -1,0 +1,226 @@
+/* General IMDb Dark Mode Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1c1c1c;  /* Dark background */
+    margin: 0;
+    padding: 0;
+    color: #fff;  /* Light text for contrast */
+}
+
+/* Container */
+.container {
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header Styling */
+header {
+    text-align: center;
+    background-color: #222;  /* Dark header */
+    padding: 15px 0;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+    font-size: 2.5em;
+    color: #ffcd00;  /* IMDb yellow */
+    font-weight: bold;
+}
+
+/* InfluenceIQ Form Styling */
+.form-container {
+    background-color: #2c2c2c;  /* Dark background */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 50%;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.form-container h2 {
+    color: #ffcd00; /* IMDb yellow */
+}
+
+label {
+    display: block;
+    font-size: 1.1em;
+    margin-top: 10px;
+    color: #ddd;
+}
+
+input {
+    width: 80%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 5px;
+    background: #444;
+    color: white;
+    font-size: 1em;
+    text-align: center;
+}
+
+button {
+    margin-top: 15px;
+    padding: 10px 15px;
+    font-size: 1em;
+    background-color: #ffcd00; /* IMDb Yellow */
+    border: none;
+    color: black;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: #e6b800; /* Darker yellow */
+}
+
+/* Findings Display Box */
+#findings {
+    width: 50%;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: #333;  /* Dark gray */
+    border: 1px solid #444;
+    border-radius: 8px;
+    text-align: center;
+    color: #fff;
+}
+
+#findings h3 {
+    color: #ffcd00;
+}
+
+#findings p {
+    font-size: 1.2em;
+    margin: 5px 0;
+}
+
+#findings span {
+    font-weight: bold;
+}
+
+/* IMDb Styled Table */
+.table-container, .ranking-table {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #2c2c2c;  /* Dark background */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.review-table, .ranking-table, .spam-review-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1em;
+    color: #fff;
+}
+
+/* Table Headers */
+.review-table th, .ranking-table th, .spam-review-table th {
+    background-color: #222;  /* Dark header */
+    color: #ffcd00;  /* IMDb yellow */
+    font-weight: bold;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #444;
+}
+
+/* Table Body */
+.review-table td, .ranking-table td, .spam-review-table td {
+    padding: 12px;
+    border-bottom: 1px solid #444;  /* Gray separator */
+    background-color: #333;  /* Slightly lighter row background */
+}
+
+/* Alternating Row Colors */
+.review-table tr:nth-child(even) td, 
+.ranking-table tr:nth-child(even) td,
+.spam-review-table tr:nth-child(even) td {
+    background-color: #2b2b2b;  /* Lighter gray */
+}
+
+/* Hover Effect */
+.review-table tr:hover, 
+.ranking-table tr:hover,
+.spam-review-table tr:hover {
+    background-color: #444;
+    cursor: pointer;
+}
+
+/* Centering Rank & Influence Score */
+.ranking-table td:nth-child(1), /* Rank */
+.ranking-table td:nth-child(8) { /* InfluenceIQ Score */
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Highlighting High InfluenceIQ Scores */
+.ranking-table td:nth-child(8) {
+    color: #ffcd00; /* IMDb Yellow */
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+/* Location Styling */
+.ranking-table td:last-child, 
+.review-table td:nth-child(5), /* Location in Review Table */
+.review-table td:nth-child(6), /* Latitude */
+.review-table td:nth-child(7) { /* Longitude */
+    color: #bbb;  /* Lighter text */
+}
+
+/* Spam Review Table */
+.spam-review-table {
+    margin-top: 20px;
+    background: #2c2c2c;  /* Dark mode background */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Spam Label Styling */
+.spam-label {
+    display: inline-block;
+    padding: 5px 12px;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: center;
+    width: 100px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+/* Spam Classification Colors */
+.spam-label.spam {
+    background-color: #ff4d4d; /* Red for Spam */
+    color: white;
+    border: 1px solid #ff2c2c;
+}
+
+.spam-label.not-spam {
+    background-color: #4CAF50; /* Green for Not Spam */
+    color: white;
+    border: 1px solid #2e7d32;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-container, #findings {
+        width: 80%;
+    }
+
+    .review-table, .ranking-table, .spam-review-table {
+        font-size: 12px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+}

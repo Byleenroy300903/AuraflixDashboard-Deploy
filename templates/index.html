@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Reviews & InfluenceIQ</title>
+    <link rel="stylesheet" href="/static/style.css"> <!-- Link to the CSS file -->
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Movie Reviews Dashboard</h1>
+        </header>
+
+        <!-- Movie Reviews Table -->
+        <div class="table-container">
+            <h2>Movie Reviews</h2>
+            <table class="review-table">
+                <thead>
+                    <tr>
+                        <th>Movie Title</th>
+                        <th>Rating</th>
+                        <th>Review</th>
+                        <th>Timestamp</th>
+                        <th>Location</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for review in reviews %}
+                    <tr>
+                        <td>{{ review[0] }}</td>  <!-- Movie Title -->
+                        <td>{{ review[1] }}</td>  <!-- Rating -->
+                        <td>{{ review[2] }}</td>  <!-- Review -->
+                        <td>{{ review[3] }}</td>  <!-- Timestamp -->
+                        <td>{{ review[4] }}, {{ review[5] }}, {{ review[6] }}</td>  <!-- District, State, Nation -->
+                        <td>{{ review[7] }}</td>  <!-- Latitude -->
+                        <td>{{ review[8] }}</td>  <!-- Longitude -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        
+        <!-- Spam Review Classification Table -->
+<div class="table-container">
+    <h2>Spam Review Detection</h2>
+    <table class="spam-review-table">
+        <thead>
+            <tr>
+                <th>Review ID</th>
+                <th>Review Text</th>
+                <th>Spam Classification</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for review in classified_reviews %}
+            <tr>
+                <td>{{ review[0] }}</td>  <!-- Review ID -->
+                <td>{{ review[1] }}</td>  <!-- Review Text -->
+                <td>
+                    <span class="spam-label {% if review[2] == 'Spam' %}spam{% else %}not-spam{% endif %}">
+                        {{ review[2] }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- InfluenceIQ Submission Form -->
+<div class="form-container">
+    <h2>Submit InfluenceIQ Review</h2>
+    <form id="influenceForm">
+        <label for="name">Public Figure Name:</label>
+        <input type="text" id="name" required>
+        <button type="submit">Analyze Influence</button>
+    </form>
+</div>
+
+<!-- Findings Display -->
+<div id="findings" style="display: none; padding: 15px; background-color: #222; color: #fff; border-radius: 8px;">
+
+    <h3>Analysis Findings:</h3>
+    <p><strong>Online Mentions:</strong> <span id="onlineMentions"></span></p>
+    <p><strong>YouTube Engagement:</strong> <span id="youtubeEngagement"></span></p>
+    <p><strong>Identity Verified:</strong> <span id="identityVerified"></span></p>
+</div>
+
+<script>
+    document.getElementById("influenceForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        let name = document.getElementById("name").value;
+
+        fetch('/submit_influence_review', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+
+            document.getElementById("onlineMentions").textContent = data.online_mentions;
+            let engagement = data.youtube_engagement;
+document.getElementById("youtubeEngagement").innerHTML = `
+    <strong>Avg. Views:</strong> ${engagement.average_views} <br>
+    <strong>Avg. Likes:</strong> ${engagement.average_likes} <br>
+    <strong>Avg. Comments:</strong> ${engagement.average_comments} <br>
+    <strong>Total Videos:</strong> ${engagement.total_videos}
+`;
+
+            document.getElementById("identityVerified").textContent = data.is_verified ? "Yes ✅" : "No ❌";
+
+            document.getElementById("findings").style.display = "block";
+            loadRankings();
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    function loadRankings() {
+        fetch('/get_influence_ranking')
+        .then(response => response.json())
+        .then(data => { /* Update rankings dynamically */ });
+    }
+</script>
+
+<!-- 🚀 Enhanced Spam vs Proper Messages Live Chart -->
+<div class="chart-wrapper">
+    <h2 class="chart-title">📊 Live Spam vs. Proper Review Analysis</h2>
+    <canvas id="spamChart"></canvas>
+</div>
+
+<!-- Chart.js & Socket.io -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/socket.io-client/dist/socket.io.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById('spamChart').getContext('2d');
+
+        // 🌟 Elegant Gradient for a Smooth, Professional Look
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(255, 99, 132, 0.4)');  // Light red for spam
+        gradient.addColorStop(1, 'rgba(54, 162, 235, 0.4)');  // Light blue for proper
+
+        // 🚀 Refined Live Chart
+        const spamChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Spam vs. Proper Messages',
+                    data: [],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.3,  
+                    borderWidth: 2,
+                    pointRadius: 2,  // Smaller dots for clean look
+                    pointBackgroundColor: 'rgba(255, 255, 255, 1)',
+                    pointHoverRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1200,
+                    easing: 'easeInOutCubic'  
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#ddd',
+                            font: { size: 10.5 }  
+                        },
+                        grid: { display: false }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#ddd',
+                            font: { size: 10.5 }  
+                        },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#ffffff',
+                            font: { size: 10.5 }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 🌍 WebSocket for Real-Time Updates
+        var socket = io.connect('http://127.0.0.1:8500');
+
+        socket.on('update_chart', function (data) {
+            if (spamChart.data.labels.length > 20) {
+                spamChart.data.labels.shift();
+                spamChart.data.datasets[0].data.shift();
+            }
+
+            spamChart.data.labels.push(data.time);
+            spamChart.data.datasets[0].data.push(data.spam - data.proper);
+
+            spamChart.update();
+        });
+    });
+</script>
+
+<!-- 🎨 Professional Styling -->
+<style>
+    .chart-wrapper {
+        width: 100%;
+        height: 250px;  /* Fixed Compact Size */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #1e1e1e;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .chart-title {
+        font-size: 14px;  
+        color: #00ffaa;
+        font-weight: bold;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+    }
+
+    canvas {
+        width: 100% !important;
+        height: 250px !important;
+    }
+</style>
+
+
+
+</body>
+</html>
